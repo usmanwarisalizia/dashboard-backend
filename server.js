@@ -18,7 +18,7 @@ app.use('/api/appointments', require('./routes/appointments'));
 app.use('/api/departments', require('./routes/departments'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/chat', require('./routes/chat'));
-app.get('/*', (req, res, next) => {
+app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api')) return next();
   const indexPath = path.join(__dirname, 'public', 'index.html');
   const fs = require('fs');
