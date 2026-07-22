@@ -18,27 +18,31 @@ app.use('/api/appointments', require('./routes/appointments'));
 app.use('/api/departments', require('./routes/departments'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/chat', require('./routes/chat'));
-
-app.get('/{*splat}', (req, res, next) => {
+app.get('/*', (req, res, next) => {
   if (req.path.startsWith('/api')) return next();
   const indexPath = path.join(__dirname, 'public', 'index.html');
   const fs = require('fs');
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.status(200).json({ message: 'API Server Running' });
+    res.status(200).json({ message: 'API Server Running on Vercel 🚀' });
   }
 });
 
+// MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ MongoDB Connected');
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-      console.log(`🏥 Hospital Management System running on http://localhost:${PORT}`);
-    });
+    
+    if (process.env.NODE_ENV !== 'production') {
+      const PORT = process.env.PORT || 5000;
+      app.listen(PORT, () => {
+        console.log(`🏥 Hospital Management System running on http://localhost:${PORT}`);
+      });
+    }
   })
   .catch(err => {
     console.error('❌ MongoDB connection error:', err.message);
-    process.exit(1);
   });
+
+module.exports = app;
